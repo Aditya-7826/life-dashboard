@@ -5,41 +5,38 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
 export default function AddWorkoutForm() {
-  const [exercise, setExercise] = useState("");
-  const [sets, setSets] = useState("");
-  const [reps, setReps] = useState("");
-  const [weight, setWeight] = useState("");
-  const router = useRouter();
+const [exercise, setExercise] = useState("");
+const [sets, setSets] = useState("");
+const [reps, setReps] = useState("");
+const [weight, setWeight] = useState("");
 
-  async function handleSubmit() {
-    console.log("Submitting:", {
+const router = useRouter();
+
+async function handleSubmit() {
+const {
+  data: { user },
+} = await supabase.auth.getUser();
+
+alert(JSON.stringify(user));
+console.log("USER:", user);
+const { error } = await supabase
+  .from("workouts")
+  .insert([
+    {
       exercise,
-      sets,
-      reps,
-      weight,
-    });
+      sets: Number(sets),
+      reps: Number(reps),
+      weight: Number(weight),
+      user_id: user?.id,
+    },
+  ]);
 
-    const { data, error } = await supabase
-      .from("workouts")
-      .insert([
-        {
-          exercise: exercise,
-          sets: Number(sets),
-          reps: Number(reps),
-          weight: Number(weight),
-        },
-      ])
-      .select();
+if (error) {
+  alert(error.message);
+  return;
+}
 
-    console.log("Inserted Data:", data);
-    console.log("Error:", error);
-
-    if (error) {
-      alert(error.message);
-      return;
-    }
-
-    alert("Workout saved!");
+alert("Workout saved!");
 
 setExercise("");
 setSets("");
@@ -47,52 +44,52 @@ setReps("");
 setWeight("");
 
 router.refresh();
-  }
 
-  return (
-    <div className="rounded-xl border border-zinc-800 p-4 mb-8">
-      <h2 className="text-xl font-bold mb-4">
-        Add Workout
-      </h2>
+}
 
-      <input
-        type="text"
-        value={exercise}
-        onChange={(e) => setExercise(e.target.value)}
-        placeholder="Exercise"
-        className="w-full p-2 mb-3 bg-zinc-900 rounded"
-      />
+return ( <div className="rounded-xl border border-zinc-800 p-4 mb-8"> <h2 className="text-xl font-bold mb-4">
+Add Workout </h2>
 
-      <input
-        type="number"
-        value={sets}
-        onChange={(e) => setSets(e.target.value)}
-        placeholder="Sets"
-        className="w-full p-2 mb-3 bg-zinc-900 rounded"
-      />
+```
+  <input
+    type="text"
+    value={exercise}
+    onChange={(e) => setExercise(e.target.value)}
+    placeholder="Exercise"
+    className="w-full p-2 mb-3 bg-zinc-900 rounded text-white"
+  />
 
-      <input
-        type="number"
-        value={reps}
-        onChange={(e) => setReps(e.target.value)}
-        placeholder="Reps"
-        className="w-full p-2 mb-3 bg-zinc-900 rounded"
-      />
+  <input
+    type="number"
+    value={sets}
+    onChange={(e) => setSets(e.target.value)}
+    placeholder="Sets"
+    className="w-full p-2 mb-3 bg-zinc-900 rounded text-white"
+  />
 
-      <input
-        type="number"
-        value={weight}
-        onChange={(e) => setWeight(e.target.value)}
-        placeholder="Weight"
-        className="w-full p-2 mb-3 bg-zinc-900 rounded"
-      />
+  <input
+    type="number"
+    value={reps}
+    onChange={(e) => setReps(e.target.value)}
+    placeholder="Reps"
+    className="w-full p-2 mb-3 bg-zinc-900 rounded text-white"
+  />
 
-      <button
-        onClick={handleSubmit}
-        className="bg-white text-black px-4 py-2 rounded"
-      >
-        Save Workout
-      </button>
-    </div>
-  );
+  <input
+    type="number"
+    value={weight}
+    onChange={(e) => setWeight(e.target.value)}
+    placeholder="Weight"
+    className="w-full p-2 mb-3 bg-zinc-900 rounded text-white"
+  />
+
+  <button
+    onClick={handleSubmit}
+    className="bg-white text-black px-4 py-2 rounded"
+  >
+    Save Workout
+  </button>
+</div>
+
+);
 }
