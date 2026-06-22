@@ -21,12 +21,22 @@ export default function GenericForm({
   const router = useRouter();
 
   const [formData, setFormData] = useState<Record<string, string>>({});
+
   async function handleSubmit() {
     console.log(formData);
-    
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
     const { error } = await supabase
       .from(table)
-      .insert([formData]);
+      .insert([
+        {
+          ...formData,
+          user_id: user?.id,
+        },
+      ]);
 
     if (error) {
       alert(error.message);
@@ -57,7 +67,7 @@ export default function GenericForm({
               [field.name]: e.target.value,
             })
           }
-          className="w-full p-2 mb-3 bg-zinc-900 rounded"
+          className="w-full p-2 mb-3 bg-zinc-900 rounded text-white"
         />
       ))}
 
