@@ -1,11 +1,21 @@
 export default function Home() {
-  console.log(process.env.NEXT_PUBLIC_SUPABASE_URL);
-
   return (
-    <main className="flex min-h-screen items-center justify-center bg-black text-white">
-      <h1 className="text-4xl font-bold">
-        Life Dashboard Setup Complete 🚀
-      </h1>
+    <main className="p-10 text-white bg-black min-h-screen">
+      <h1>Environment Test</h1>
+
+      <p>
+        URL:
+        {process.env.NEXT_PUBLIC_SUPABASE_URL
+          ? " FOUND"
+          : " MISSING"}
+      </p>
+
+      <p>
+        KEY:
+        {process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+          ? " FOUND"
+          : " MISSING"}
+      </p>
     </main>
   );
 }
